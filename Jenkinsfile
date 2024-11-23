@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs "NodeJS"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -16,20 +20,22 @@ pipeline {
 
         stage('Run Playwright Tests') {
             steps {
-                sh 'npx playwright test'
-            }
-        }
-
-        stage('Generate Report') {
-            steps {
-                sh 'npx playwright show-report'
+                sh 'HEADLESS=true npx playwright test --reporter=html'
             }
         }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: '**/playwright-report/**', allowEmptyArchive: true
+            publishHTML(target: [
+                allowMissing: false,            
+                alwaysLinkToLastBuild: true,     
+                keepAll: true,                   
+                reportDir: 'playwright-report', 
+                reportFiles: 'index.html',      
+                reportName: 'Playwright Test Report',
+                includes: '**/*'
+            ])
         }
     }
 }
