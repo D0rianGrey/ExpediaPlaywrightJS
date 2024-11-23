@@ -1,13 +1,9 @@
-import { test, expect } from '@playwright/test';
-import { MainPage } from '../../pages/MainPage';
+import { test } from '../../utils/testFixtures';
 import { ProductName } from '../../pages/modules/productsBar/ProductNameEnum';
-import { createCustomPage } from '../../utils/customBrowserContext';
 
-test('Example Test', async () => {
-    const page = await createCustomPage();
-    const mainPage = new MainPage(page);
 
+test('Example Test', async ({ mainPage }) => {
     await mainPage.navigate();
     // await mainPage.clickOnProduct(ProductName.FLIGHTS)
-    await mainPage.clickOnEachProduct(1000);
+    await mainPage.clickOnEachProduct();
 });
