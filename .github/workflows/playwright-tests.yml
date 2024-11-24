@@ -13,29 +13,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Проверка кода из репозитория
+      # 1. Checkout Code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Установка Node.js
+      # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16' # Укажите вашу версию Node.js, если она отличается
+          node-version: '16'
 
-      # Установка зависимостей
+      # 3. Install Dependencies
       - name: Install Dependencies
         run: npm install
 
-      # Запуск Playwright тестов
+      # 4. Run Playwright Tests
       - name: Run Playwright Tests
         env:
           HEADLESS: true
         run: npx playwright test --reporter=html
 
-      # Публикация отчета Playwright
-      - name: Upload Playwright Test Report
-        uses: actions/upload-artifact@v3
+      # 5. Deploy HTML Report to GitHub Pages
+      - name: Deploy Playwright Report to GitHub Pages
+        if: ${{ success() }}
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: playwright-test-report
-          path: playwright-report/
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: playwright-report
