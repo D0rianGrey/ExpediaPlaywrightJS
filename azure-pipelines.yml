@@ -1,46 +1,40 @@
 trigger:
-  - none  # Здесь можно указать branch для автоматического запуска, или оставить пустым для ручного запуска
+  - main  # Триггер для запуска pipeline (например, ветка main)
 
-pr:
-  - none
+pool:
+  vmImage: 'ubuntu-latest'
 
-# Ручной запуск pipeline
 variables:
-  NODE_VERSION: '16'
+  NODE_VERSION: '16'  # Указать используемую версию Node.js
 
-stages:
-  - stage: Playwright_Tests
+steps:
+  # 1. Checkout репозиторий
+  - checkout: self
+    displayName: "Checkout Repository"
+
+  # 2. Установка Node.js
+  - task: UseNode@1
+    displayName: "Setup Node.js"
+    inputs:
+      version: $(NODE_VERSION)
+
+  # 3. Установка зависимостей
+  - script: npm install
+    displayName: "Install Dependencies"
+
+  # 4. Запуск Playwright тестов
+  - script: npx playwright test --reporter=html
     displayName: "Run Playwright Tests"
-    jobs:
-      - job: PlaywrightTests
-        displayName: "Execute Playwright Tests"
-        pool:
-          vmImage: 'ubuntu-latest'
 
-        steps:
-          - checkout: self
-            displayName: "Checkout Code"
+  # 5. Публикация отчета как артефакта
+  - task: PublishPipelineArtifact@1
+    displayName: "Publish Playwright Report"
+    inputs:
+      targetPath: 'playwright-report'  # Папка с HTML-отчетом
+      artifact: 'PlaywrightReport'    # Имя артефакта
+      publishLocation: 'pipeline'
 
-          # 2. Setup Node.js
-          - task: UseNode@1
-            displayName: "Setup Node.js"
-            inputs:
-              version: $(NODE_VERSION)
-
-          # 3. Install Dependencies
-          - script: npm install
-            displayName: "Install Dependencies"
-
-          # 4. Run Playwright Tests
-          - script: npx playwright test --reporter=html
-            displayName: "Run Playwright Tests"
-            env:
-              HEADLESS: true
-
-          # 5. Publish HTML Report as Artifact
-          - task: PublishPipelineArtifact@1
-            displayName: "Publish Playwright Report"
-            inputs:
-              targetPath: 'playwright-report'
-              artifact: 'PlaywrightReport'
-              publishLocation: 'pipeline'
+  # 6. (Опционально) Ссылка на отчет в результатах
+  - script: |
+      echo "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Playwright Report;]$(Build.ArtifactStagingDirectory)/playwright-report/index.html"
+    displayName: "Attach HTML Report"
