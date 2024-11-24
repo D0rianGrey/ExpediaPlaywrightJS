@@ -18,8 +18,7 @@ stages:
           vmImage: 'ubuntu-latest'
 
         steps:
-          # 1. Checkout Code
-          - task: Checkout@1
+          - checkout: self
             displayName: "Checkout Code"
 
           # 2. Setup Node.js
