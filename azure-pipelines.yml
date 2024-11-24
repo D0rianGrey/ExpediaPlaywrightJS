@@ -28,15 +28,31 @@ steps:
     env:
       HEADLESS: true
 
-  # 5. Публикация отчета как артефакта
+  # 5. Проверка существования HTML-отчета
+  - script: |
+      if [ -d "playwright-report" ]; then
+        echo "Report directory exists."
+      else
+        echo "Report directory is missing. Tests might have failed."
+        exit 1
+      fi
+    displayName: "Check Playwright Report Directory"
+
+  # 6. Перемещение отчета в директорию staging
+  - script: |
+      mkdir -p $(Build.ArtifactStagingDirectory)/playwright-report
+      cp -R playwright-report/* $(Build.ArtifactStagingDirectory)/playwright-report
+    displayName: "Move Playwright Report to Staging Directory"
+
+  # 7. Публикация отчета как артефакта
   - task: PublishPipelineArtifact@1
     displayName: "Publish Playwright Report"
     inputs:
-      targetPath: 'playwright-report'  # Папка с HTML-отчетом
+      targetPath: '$(Build.ArtifactStagingDirectory)/playwright-report'  # Путь к HTML-отчету
       artifact: 'PlaywrightReport'    # Имя артефакта
       publishLocation: 'pipeline'
 
-  # 6. (Опционально) Ссылка на отчет в результатах
+  # 8. Ссылка на отчет в результатах
   - script: |
       echo "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Playwright Report;]$(Build.ArtifactStagingDirectory)/playwright-report/index.html"
     displayName: "Attach HTML Report"
