@@ -25,6 +25,8 @@ steps:
   # 4. Запуск Playwright тестов
   - script: npx playwright test --reporter=html
     displayName: "Run Playwright Tests"
+    env:
+      HEADLESS: true
 
   # 5. Публикация отчета как артефакта
   - task: PublishPipelineArtifact@1
