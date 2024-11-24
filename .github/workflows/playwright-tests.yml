@@ -1,0 +1,41 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Проверка кода из репозитория
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Установка Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16' # Укажите вашу версию Node.js, если она отличается
+
+      # Установка зависимостей
+      - name: Install Dependencies
+        run: npm install
+
+      # Запуск Playwright тестов
+      - name: Run Playwright Tests
+        env:
+          HEADLESS: true
+        run: npx playwright test --reporter=html
+
+      # Публикация отчета Playwright
+      - name: Upload Playwright Test Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-test-report
+          path: playwright-report/
