@@ -5,7 +5,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  NODE_VERSION: '16'  # Указать используемую версию Node.js
+  NODE_VERSION: '16'  # Версия Node.js для Playwright
 
 steps:
   # 1. Checkout репозиторий
@@ -52,7 +52,13 @@ steps:
       artifact: 'PlaywrightReport'    # Имя артефакта
       publishLocation: 'pipeline'
 
-  # 8. Ссылка на отчет в результатах
+  # 8. (Опционально) Добавление ссылки через Markdown
   - script: |
-      echo "##vso[task.addattachment type=Distributedtask.Core.Summary;name=Playwright Report;]$(Build.ArtifactStagingDirectory)/playwright-report/index.html"
-    displayName: "Attach HTML Report"
+      echo "[Playwright Report](https://dev.azure.com/$(System.TeamProject)/_apis/resources/Containers/$(Build.BuildId)?itemPath=playwright-report/index.html)" > $(Build.ArtifactStagingDirectory)/playwright-report-link.md
+    displayName: "Generate Markdown Link"
+
+  - task: PublishPipelineArtifact@1
+    displayName: "Publish Report Link"
+    inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)/playwright-report-link.md'
+      artifact: 'ReportLink'
