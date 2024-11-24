@@ -8,11 +8,6 @@ on:
     branches:
       - master
   workflow_dispatch: # Позволяет запускать workflow вручную
-    inputs: # Настраиваем параметры запуска, если нужны
-      testType:
-        description: 'Type of tests to run (all, smoke, regression)'
-        required: false
-        default: 'all'
 
 jobs:
   test:
