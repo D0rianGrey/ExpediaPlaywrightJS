@@ -1,9 +1,9 @@
-import { Page, Locator, expect } from "@playwright/test";
-import { createCustomPage } from "../utils/customBrowserContext";
-import { ProductsBar } from "./modules/productsBar/ProductsBar";
-import { ProductName } from "./modules/productsBar/ProductNameEnum";
-import { clickElement } from '../utils/wrapperBasicActions';
-import { logInfo, logSuccess, logError, logAction } from '../utils/log';
+import {expect, Page} from "@playwright/test";
+import {createCustomPage} from "../utils/customBrowserContext";
+import {ProductsBar} from "./modules/productsBar/ProductsBar";
+import {ProductName} from "./modules/productsBar/ProductNameEnum";
+import {clickElement} from '../utils/wrapperBasicActions';
+import {logSuccess} from '../utils/log';
 
 export class MainPage {
 
@@ -36,15 +36,14 @@ export class MainPage {
     }
 
     async verifyThatStaysIsSelectedByDefault() {
-        this.verifyThatProductIsActive(ProductName.STAYS)
-
+        await this.verifyThatProductIsActive(ProductName.STAYS)
     }
 
     async clickOnEachProduct(time?: number) {
         const delay = time ?? 0;
         for (const product of Object.values(ProductName)) {
             await this.clickOnProduct(product);
-            this.verifyThatProductIsActive(product)
+            await this.verifyThatProductIsActive(product)
             await this.page.waitForTimeout(delay);
         }
     }
