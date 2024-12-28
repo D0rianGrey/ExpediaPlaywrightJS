@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs "NodeJS"
+        nodejs 'NodeJS'
     }
 
     stages {
@@ -28,11 +28,11 @@ pipeline {
     post {
         always {
             publishHTML(target: [
-                allowMissing: false,            
-                alwaysLinkToLastBuild: true,     
-                keepAll: true,                   
-                reportDir: 'playwright-report', 
-                reportFiles: 'index.html',      
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'playwright-report',
+                reportFiles: 'index.html',
                 reportName: 'Playwright Test Report',
                 includes: '**/*'
             ])
