@@ -3,5 +3,6 @@
         "expediaplaywrightjs",
         "KHTML",
         "stid"
-    ]
+    ],
+    "python.analysis.autoImportCompletions": true
 }
