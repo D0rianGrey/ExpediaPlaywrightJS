@@ -4,5 +4,8 @@
         "KHTML",
         "stid"
     ],
-    "python.analysis.autoImportCompletions": true
+    "python.analysis.autoImportCompletions": true,
+    "files.watcherExclude": {
+        "**/target": true
+    }
 }

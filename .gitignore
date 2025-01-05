@@ -4,3 +4,5 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /practice_rust/target/
+/practice/.scala-build
+/.scala-build
